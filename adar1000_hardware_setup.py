@@ -1,7 +1,5 @@
-import adi
-import math
 import time
-from typing import List, Dict
+from typing import List
 from adi import adar1000
 
 class ADAR1000Controller:
@@ -13,7 +11,7 @@ class ADAR1000Controller:
                                chip_id=chip_name,
                                array_element_map=[[1, 2, 3, 4]],
                                channel_element_map=[1, 2, 3, 4])
-        self.device.initialize()
+        self.device.initialize(pa_off=, pa_on=, lna_off=, lna_on=)                                       ########FIX
         
         
     ##===============##
@@ -27,7 +25,7 @@ class ADAR1000Controller:
         Parameters:
             pa_bias (float): pa_bias to be assigned (BOUNDS)
         """
-        if (pa_bias >= NULL | pa_bias <= NULL): #ADD BOUNDS TO PA_BIAS (or just hardcode it? ask rohit what's preferred)
+        if (pa_bias >= NULL | pa_bias <= NULL)                                                         ###########FIX
             return
         self.device.mode = "tx"
         for ch in enumerate(self.device.channels):
@@ -66,7 +64,7 @@ class ADAR1000Controller:
         Set the TX phases for each channel
 
         Parameters:
-            phases (List[int]): List of four integer phases (0-128) in order of channel
+            phases (List[int]): List of four integer phases (0-127) in order of channel
         """
         self.validate_phase_gain_vector(phases, "Phase")
         for i, ch in enumerate(self.device.channels):
@@ -79,7 +77,7 @@ class ADAR1000Controller:
         Set the TX gain for each channel
 
         Parameters:
-            gains (List[int]): List of four integer gains (0-128) in order of channel
+            gains (List[int]): List of four integer gains (0-127) in order of channel
         """
         self.validate_phase_gain_vector(gains, "Gain")
         for i, ch in enumerate(self.device.channels):
@@ -92,7 +90,7 @@ class ADAR1000Controller:
         Set the RX phase for each channel
 
         Parameters:
-            phases (List[int]): List of four integer phases (0-128) in order of channel
+            phases (List[int]): List of four integer phases (0-127) in order of channel
         """
         self.validate_phase_gain_vector(phases, "Phases")
         for i, ch in enumerate(self.device.channels):
@@ -105,7 +103,7 @@ class ADAR1000Controller:
         Set the RX gain for each channel
 
         Parameters:
-            gains (List[int]): List of four integer gains (0-128) in order of channel
+            gains (List[int]): List of four integer gains (0-127) in order of channel
         """
         self.validate_phase_gain_vector(gains, "Gain")
         for i, ch in enumerate(self.device.channels):
@@ -125,7 +123,7 @@ class ADAR1000Controller:
             bias (float): The PA-bias to be set
         """
         for i, ch in enumerate(self.device.channels):
-            if (bias >= -5 & bias <= 5): ## ADD REASONABLE BOUNDS IDK
+            if (bias >= -5 & bias <= 5):                                            ## ADD REASONABLE BOUNDS IDK
                 ch.pa_bias_on = bias
         self.device.latch_tx_settings()
     
@@ -154,8 +152,16 @@ class ADAR1000Controller:
                 raise ValueError(f"{name} entries must be integers")
             if not 0 <= val <= 127:
                 raise ValueError(f"{name} values must be between 0 and 127")
-    
-    
-    #TODO
-    # - Add error-bounds for checking PA_bias
-    # - Make the actual program that uses this control class.
+
+
+
+
+adar = ADAR1000Controller(uri=, chip_name='BEAM_TX')
+
+"""
+for i in range(100):
+    print(f"Temp #{i}: {adar.read_temperature()}")
+    time.sleep(1)
+"""
+
+# adar.set_tx_gain([127, 127, 127, 127])
